@@ -4,8 +4,13 @@
 # => Global Scope
 # => Local Scope
 # - Methods
+# => Instance
+# => Class
+# => Public
+# => Private
 
 
+# ===== Scope =====
 # Checkout this link for learning about Ruby scope:
 # http://rubylearning.com/satishtalim/scope.html
 
@@ -63,4 +68,44 @@ XYZ.new
 # This line can see the variable can_be_seen_in_the_top_container
 puts can_be_seen_in_the_top_container
 
+# Every block (method for example) has its own scope, even if nested:
+nested_arr = [ ['a', 1], ['b', 2], ['c', 3] ]
+nested_arr.each { |value| p value; value.each { |value| p value } } 
+# Notice in the above that I was able to use the variable name value twice,
+# yet value did not refer to the same thing in the outer each as in the inner each.
+# This is because each block has its own scope.
 
+puts "==========================================="
+# ===== Methods =====
+class PonziCoins
+  @@price_per_coin_in_usd = 1.0
+  def initialize
+    double_price
+  end
+
+  # Both #display_motto and #self.display_current_price are public methods
+
+  # This is an instance method, it can be called by any instance
+  # of the class PonziCoins
+  def display_motto
+    puts "A LA LUNA!!!"
+  end
+
+  # This is a class method. It may only be called on the class PonziCoins
+  def self.display_current_price
+    "Price per PonziCoin in USD: $#{@@price_per_coin_in_usd}"
+  end
+
+  # All methods below the private keyword within this class are private methods
+  private
+  # A private instance method that may only be used within the scope of this
+  # class
+  def double_price
+    @@price_per_coin_in_usd *= 2
+  end
+end
+
+worlds_first_ponzi_coin = PonziCoins.new
+p PonziCoins.display_current_price
+worlds_second_ponzi_coin = PonziCoins.new
+p PonziCoins.display_current_price
